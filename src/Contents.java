@@ -21,6 +21,22 @@ public class Contents extends JPanel implements ActionListener {
 
     }
 
+    public double area(int x1, int y1, int x2, int y2, int x3, int y3){
+        return Math.abs((x1*(y2-y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2.0);
+    }
+
+    public boolean isInside(int x1, int y1, int x2, int y2, int x3, int y3, int x, int y){
+
+        double A = area(x1, y1, x2, y2, x3, y3);
+
+        double A1 = area(x, y, x2, y2, x3, y3);
+
+        double A2 = area(x1, y1, x, y, x3, y3);
+
+        double A3 = area(x1, y1, x2, y2, x, y);
+
+        return (A == A1 + A2 + A3);
+    }
 
 
     public void paintComponent(Graphics g) {
@@ -40,9 +56,12 @@ public class Contents extends JPanel implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         if(coordinates.isEmpty()) {
-            currentX = (int) ((Math.random() * 450) + 226);
-            currentY = (int) ((Math.random() * 500) + 26);
+            while(!isInside(450, 25, 225, 525, 675, 525, currentX, currentY)) {
+                currentX = (int) ((Math.random() * 450) + 226);
+                currentY = (int) ((Math.random() * 500) + 26);
+            }
         }
+
 
         int randomDot = (int)((Math.random() * 3) + 1);
         int y = 0;
