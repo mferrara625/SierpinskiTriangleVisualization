@@ -46,7 +46,7 @@ public class Contents extends JPanel implements ActionListener {
         g2d.fillOval(225, 525, 5, 5);
         g2d.fillOval(675, 525, 5, 5);
         for(int i = 0; i < coordinates.size() - 1; i += 2){
-            g2d.fillOval(coordinates.get(i), coordinates.get(i + 1), 5, 5);
+            g2d.fillOval(coordinates.get(i), coordinates.get(i + 1), 3, 3);
         }
 
     }
