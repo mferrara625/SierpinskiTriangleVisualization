@@ -3,14 +3,29 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Contents extends JPanel implements ActionListener {
 
-    int currentX, currentY;
+    static int aX = 450;
+    static int aY = 25;
+    static int bX = 225;
+    static int bY = 525;
+    static int cX = 675;
+    static int cY = 525;
+    int currentX;
+    int currentY;
 
-    List<Integer> coordinates = new ArrayList<>();
+    static boolean pointAWasClicked = false;
+    static boolean pointBWasClicked = false;
+    static boolean pointCWasClicked = false;
+    static boolean wasPaused = false;
+
+     static List<Integer> coordinates = new ArrayList<>();
 
     private Timer t;
 
@@ -20,6 +35,63 @@ public class Contents extends JPanel implements ActionListener {
         t.start();
 
     }
+
+    public static MouseListener listener = new MouseListener() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            if(e.getX() >= 20 && e.getX() <= 65 && e.getY() >= 45 && e.getY() <= 65){
+                wasPaused = !wasPaused;
+            }
+
+            if(e.getX() >= 75 && e.getX() <= 125 && e.getY() >= 45 && e.getY() <= 65){
+                coordinates.clear();
+            }
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            System.out.println("x: " + e.getX() + "y: " + e.getY());
+            if((e.getX() >= (aX - 40) && e.getX() <= (aX + 40)) && (e.getY() >= (aY - 40) && e.getY() <= (aY + 40))){
+                pointAWasClicked = true;
+            }
+            if((e.getX() >= (bX - 40) && e.getX() <= (bX + 40)) && (e.getY() >= (bY - 40) && e.getY() <= (bY + 40))){
+                pointBWasClicked = true;
+            }
+            if((e.getX() >= (cX - 40) && e.getX() <= (cX + 40)) && (e.getY() >= (cY - 40) && e.getY() <= (cY + 40))){
+                pointCWasClicked = true;
+            }
+
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            if(pointAWasClicked) {
+                pointAWasClicked = false;
+                aX = e.getX();
+                aY = e.getY();
+            }
+            if(pointBWasClicked) {
+                pointBWasClicked = false;
+                bX = e.getX();
+                bY = e.getY();
+            }
+            if(pointCWasClicked) {
+                pointCWasClicked = false;
+                cX = e.getX();
+                cY = e.getY();
+            }
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+
+        }
+    };
 
     public double area(int x1, int y1, int x2, int y2, int x3, int y3){
         return Math.abs((x1*(y2-y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2.0);
@@ -42,9 +114,38 @@ public class Contents extends JPanel implements ActionListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-        g2d.fillOval(450, 25, 5, 5);
-        g2d.fillOval(225, 525, 5, 5);
-        g2d.fillOval(675, 525, 5, 5);
+        if(wasPaused) {
+            g2d.drawString("Start", 10, 10);
+            g2d.setColor(Color.green);
+        }
+        else {
+            g2d.drawString("Stop", 10, 10);
+            g2d.setColor(Color.red);
+        }
+        g2d.fillRect(10, 15, 50, 20);
+        g2d.setColor(Color.blue);
+        g2d.fillRect(70, 15, 50, 20);
+        g2d.setColor(Color.BLACK);
+        g2d.drawString("Clear", 65, 10);
+
+        if(pointAWasClicked) {
+            g2d.fillOval(getMousePosition().x, getMousePosition().y, 10, 10);
+        } else {
+            g2d.fillOval(aX, aY, 5, 5);
+        }
+
+        if(pointBWasClicked) {
+            g2d.fillOval(getMousePosition().x, getMousePosition().y, 10, 10);
+        } else {
+            g2d.fillOval(bX, bY, 5, 5);
+        }
+
+        if(pointCWasClicked) {
+            g2d.fillOval(getMousePosition().x, getMousePosition().y, 10, 10);
+        } else {
+            g2d.fillOval(cX, cY, 5, 5);
+        }
+
         for(int i = 0; i < coordinates.size() - 1; i += 2){
             g2d.fillOval(coordinates.get(i), coordinates.get(i + 1), 3, 3);
         }
@@ -55,32 +156,34 @@ public class Contents extends JPanel implements ActionListener {
 
 
     public void actionPerformed(ActionEvent e) {
-        if(coordinates.isEmpty()) {
-            while(!isInside(450, 25, 225, 525, 675, 525, currentX, currentY)) {
-                currentX = (int) ((Math.random() * 450) + 226);
-                currentY = (int) ((Math.random() * 500) + 26);
+        if(!wasPaused) {
+            if (coordinates.isEmpty()) {
+                while (!isInside(aX, aY, bX, bY, cX, cY, currentX, currentY)) {
+                    currentX = (int) ((Math.random() * 450) + 226);
+                    currentY = (int) ((Math.random() * 500) + 26);
+                }
             }
+
+
+            int randomDot = (int) ((Math.random() * 3) + 1);
+            int y = 0;
+            int x = 0;
+            if (randomDot == 1) {
+                x = aX;
+                y = aY;
+            } else if (randomDot == 2) {
+                x = bX;
+                y = bY;
+            } else if (randomDot == 3) {
+                x = cX;
+                y = cY;
+            }
+            coordinates.add((currentX + x) / 2);
+            coordinates.add((currentY + y) / 2);
+
+            currentX = (currentX + x) / 2;
+            currentY = (currentY + y) / 2;
         }
-
-
-        int randomDot = (int)((Math.random() * 3) + 1);
-        int y = 0;
-        int x = 0;
-        if(randomDot == 1){
-            x = 450;
-            y = 25;
-        } else if (randomDot == 2){
-            x = 225;
-            y = 525;
-        } else if (randomDot == 3){
-            x = 675;
-            y = 525;
-        }
-        coordinates.add((currentX + x) / 2);
-        coordinates.add((currentY + y) / 2);
-
-        currentX = (currentX + x) / 2;
-        currentY = (currentY + y) / 2;
 
         repaint();
     }
