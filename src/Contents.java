@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class Contents extends JPanel implements ActionListener {
@@ -25,7 +24,7 @@ public class Contents extends JPanel implements ActionListener {
     static boolean pointCWasClicked = false;
     static boolean wasPaused = false;
 
-     static List<Integer> coordinates = new ArrayList<>();
+    static List<Integer> coordinates = new ArrayList<>();
 
     private Timer t;
 
@@ -67,18 +66,18 @@ public class Contents extends JPanel implements ActionListener {
         public void mouseReleased(MouseEvent e) {
             if(pointAWasClicked) {
                 pointAWasClicked = false;
-                aX = e.getX();
-                aY = e.getY();
+                aX = e.getX() - 9;
+                aY = e.getY() - 32;
             }
             if(pointBWasClicked) {
                 pointBWasClicked = false;
-                bX = e.getX();
-                bY = e.getY();
+                bX = e.getX() - 9;
+                bY = e.getY() - 32;
             }
             if(pointCWasClicked) {
                 pointCWasClicked = false;
-                cX = e.getX();
-                cY = e.getY();
+                cX = e.getX() - 9;
+                cY = e.getY() - 32;
             }
         }
 
